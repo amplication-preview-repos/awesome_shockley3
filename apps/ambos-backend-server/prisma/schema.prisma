@@ -1,0 +1,95 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  carts     Cart[]
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  orders    Order[]
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Product {
+  createdAt      DateTime              @default(now())
+  description    String?
+  gender         EnumProductGender?
+  id             String                @id @default(cuid())
+  model          Model?                @relation(fields: [modelId], references: [id])
+  modelId        String?
+  name           String?
+  price          Float?
+  stock          Int?
+  tallaAvailable String?
+  typeField      EnumProductTypeField?
+  updatedAt      DateTime              @updatedAt
+}
+
+model Model {
+  createdAt DateTime         @default(now())
+  gender    EnumModelGender?
+  id        String           @id @default(cuid())
+  name      String?
+  orders    Order[]
+  products  Product[]
+  updatedAt DateTime         @updatedAt
+}
+
+model OrderStatus {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String?
+  orders    Order[]
+  updatedAt DateTime @updatedAt
+}
+
+model Cart {
+  createdAt DateTime        @default(now())
+  id        String          @id @default(cuid())
+  status    EnumCartStatus?
+  updatedAt DateTime        @updatedAt
+  user      User?           @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model Order {
+  createdAt     DateTime     @default(now())
+  id            String       @id @default(cuid())
+  model         Model?       @relation(fields: [modelId], references: [id])
+  modelId       String?
+  orderStatus   OrderStatus? @relation(fields: [orderStatusId], references: [id])
+  orderStatusId String?
+  tallaCasaca   String?
+  tallaPantalon String?
+  total         Float?
+  updatedAt     DateTime     @updatedAt
+  user          User?        @relation(fields: [userId], references: [id])
+  userId        String?
+}
+
+enum EnumProductGender {
+  Option1
+}
+
+enum EnumProductTypeField {
+  Option1
+}
+
+enum EnumModelGender {
+  Option1
+}
+
+enum EnumCartStatus {
+  Option1
+}
