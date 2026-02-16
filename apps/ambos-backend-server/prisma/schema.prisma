@@ -21,31 +21,6 @@ model User {
   username  String   @unique
 }
 
-model Product {
-  createdAt      DateTime              @default(now())
-  description    String?
-  gender         EnumProductGender?
-  id             String                @id @default(cuid())
-  model          Model?                @relation(fields: [modelId], references: [id])
-  modelId        String?
-  name           String?
-  price          Float?
-  stock          Int?
-  tallaAvailable String?
-  typeField      EnumProductTypeField?
-  updatedAt      DateTime              @updatedAt
-}
-
-model Model {
-  createdAt DateTime         @default(now())
-  gender    EnumModelGender?
-  id        String           @id @default(cuid())
-  name      String?
-  orders    Order[]
-  products  Product[]
-  updatedAt DateTime         @updatedAt
-}
-
 model OrderStatus {
   createdAt DateTime @default(now())
   id        String   @id @default(cuid())
@@ -78,6 +53,116 @@ model Order {
   userId        String?
 }
 
+model Product {
+  createdAt      DateTime              @default(now())
+  description    String?
+  gender         EnumProductGender?
+  id             String                @id @default(cuid())
+  model          Model?                @relation(fields: [modelId], references: [id])
+  modelId        String?
+  name           String?
+  price          Float?
+  stock          Int?
+  tallaAvailable String?
+  typeField      EnumProductTypeField?
+  updatedAt      DateTime              @updatedAt
+}
+
+model Model {
+  createdAt DateTime         @default(now())
+  gender    EnumModelGender?
+  id        String           @id @default(cuid())
+  name      String?
+  orders    Order[]
+  products  Product[]
+  updatedAt DateTime         @updatedAt
+}
+
+model Usuario {
+  apellido       String?
+  carrito        Carrito?        @relation(name: "CarritoOnUsuarios", fields: [carritoId], references: [id])
+  carritoId      String?
+  carritos       Carrito[]       @relation(name: "CarritosOnUsuario")
+  createdAt      DateTime        @default(now())
+  email          String?
+  id             String          @id @default(cuid())
+  nombre         String?
+  ordenDeCompras OrdenDeCompra[]
+  pedidos        Pedido[]
+  rol            EnumUsuarioRol?
+  updatedAt      DateTime        @updatedAt
+}
+
+model Producto {
+  colorPrincipal String?
+  createdAt      DateTime            @default(now())
+  esLiso         Boolean?
+  genero         EnumProductoGenero?
+  id             String              @id @default(cuid())
+  nombre         String?
+  precio         Float?
+  stock          Int?
+  subColorVivo   String?
+  tipo           EnumProductoTipo?
+  updatedAt      DateTime            @updatedAt
+}
+
+model Pedido {
+  adeuda       Float?
+  comprobante  Json?
+  createdAt    DateTime                @default(now())
+  descripcion  String?
+  estado       EnumPedidoEstado?
+  id           String                  @id @default(cuid())
+  metodoDePago EnumPedidoMetodoDePago?
+  restoPagado  Boolean?
+  seA          Float?
+  talle        Talle?                  @relation(fields: [talleId], references: [id])
+  talleId      String?
+  updatedAt    DateTime                @updatedAt
+  usuario      Usuario?                @relation(fields: [usuarioId], references: [id])
+  usuarioId    String?
+}
+
+model OrdenDeCompra {
+  createdAt DateTime                 @default(now())
+  estado    EnumOrdenDeCompraEstado?
+  id        String                   @id @default(cuid())
+  updatedAt DateTime                 @updatedAt
+  usuario   Usuario?                 @relation(fields: [usuarioId], references: [id])
+  usuarioId String?
+}
+
+model Talle {
+  createdAt DateTime @default(now())
+  especial  Boolean?
+  id        String   @id @default(cuid())
+  pedidos   Pedido[]
+  updatedAt DateTime @updatedAt
+  valor     String?
+}
+
+model Carrito {
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  updatedAt DateTime  @updatedAt
+  usuario   Usuario?  @relation(name: "CarritosOnUsuario", fields: [usuarioId], references: [id])
+  usuarioId String?
+  usuarios  Usuario[] @relation(name: "CarritoOnUsuarios")
+}
+
+model Color {
+  createdAt        DateTime @default(now())
+  id               String   @id @default(cuid())
+  nombre           String?
+  numeroReferencia Int?
+  updatedAt        DateTime @updatedAt
+}
+
+enum EnumCartStatus {
+  Option1
+}
+
 enum EnumProductGender {
   Option1
 }
@@ -90,6 +175,26 @@ enum EnumModelGender {
   Option1
 }
 
-enum EnumCartStatus {
+enum EnumUsuarioRol {
+  Option1
+}
+
+enum EnumProductoGenero {
+  Option1
+}
+
+enum EnumProductoTipo {
+  Option1
+}
+
+enum EnumPedidoEstado {
+  Option1
+}
+
+enum EnumPedidoMetodoDePago {
+  Option1
+}
+
+enum EnumOrdenDeCompraEstado {
   Option1
 }
